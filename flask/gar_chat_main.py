@@ -1,6 +1,7 @@
 import os
 import random, string
 import datetime
+import glob
 from flask import Flask, render_template, request
 
 
@@ -16,20 +17,20 @@ def get_room_no():
 
 def room_init(no):
     os.makedirs(LOG_DIR, exist_ok=True)
-    with open(LOG_DIR + no + '.txt', mode='w', encoding='utf-8') as f:
+    with open(f'{LOG_DIR}{no}.txt', mode='w', encoding='utf-8') as f:
         f.write('')
 
 
 def put_logs(no, un, ch):
     dt_now = datetime.datetime.now()
     time_stamp = dt_now.strftime('%Y/%m/%d %H:%M:%S')
-    with open(LOG_DIR + no + '.txt', mode='a', encoding='utf-8') as f:
-        f.write(un + '\t' + time_stamp + '\t' + ch + '\n')
+    with open(f'{LOG_DIR}{no}.txt', mode='a', encoding='utf-8') as f:
+        f.write(f'{un}\t{time_stamp}\t{ch}\n')
 
 
 def get_logs(no):
     ret_obj = []
-    with open(LOG_DIR + no + '.txt', mode='r', encoding='utf-8') as f:
+    with open(f'{LOG_DIR}{no}.txt', mode='r', encoding='utf-8') as f:
         for line in f:
             uname, time_stamp, chat = line.split('\t')
             ret_obj.append({'uname':uname, 'time': time_stamp, 'chat':chat})
@@ -77,5 +78,27 @@ def show_room(room_no):
     return show_page(room_no=room_no, uname='', logs=logs)
 
 
+def delete_lod_logs():
+    del_files = []
+    # ログフォルダ内の全ファイルの更新日時を見る
+    for log_file in glob.glob(f'{LOG_DIR}*'):
+        stat_result = os.stat(log_file)
+        dt = datetime.datetime.fromtimestamp(stat_result.st_mtime)
+        # print(log_file)
+        # print(dt)
+        spent_time_s = datetime.datetime.now() - dt
+        if spent_time_s.days > 1:
+            # ２日以上経ってたら消す
+            del_files.append(log_file)
+    
+    # 消す
+    for log_file in del_files:
+        print(f'Removed log file "{log_file}".')
+        os.remove(log_file)
+
+
 if __name__ == "__main__":
+    # 古いファイルを消す
+    delete_lod_logs()
+
     app.run(debug=True)

@@ -37,6 +37,10 @@ def get_logs(no):
     return ret_obj
 
 
+def show_page(room_no='', uname='', logs=[]):
+    return render_template('chat_main.html', cur_url=request.url, room_no=room_no, uname=uname, logs=logs)
+
+
 @app.route('/', methods=['GET','POST'])
 def top():
     uname = ''
@@ -47,7 +51,7 @@ def top():
         room_no = request.form['room_no']
         chat = request.form['chat']
 
-        if len(chat)>0:
+        if len(uname)>0 and len(chat)>0:
             # 書き込み
             put_logs(room_no, uname, chat)
 
@@ -61,7 +65,16 @@ def top():
         # 部屋初期化
         room_init(room_no)
     
-    return render_template('chat_main.html', room_no=room_no, uname=uname, logs=logs)
+    return show_page(room_no=room_no, uname=uname, logs=logs)
+
+
+@app.route('/<string:room_no>')
+def show_room(room_no):
+    logs = get_logs(room_no)
+    if len(logs)==0:
+        return show_page()
+        
+    return show_page(room_no=room_no, uname='', logs=logs)
 
 
 if __name__ == "__main__":

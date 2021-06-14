@@ -5,9 +5,13 @@
         <title>gar_chat - room:{{ room_no }}</title>
     </head>
 
-    <body>
-        room:{{ room_no }}<br />
-        <form method="post" action="/">
+    {% if uname=='' %}
+    <body onload='fm1.uname.focus();'>
+    {% else %}
+    <body onload='fm1.chat.focus();'>
+    {% endif %}
+        {{ cur_url }}{{ room_no }}<br />
+        <form method="post" action="/" name="fm1">
             名前<input type="text" id="uname" name="uname" size="10" value="{{ uname }}" />
             <input type="text" id="chat" name="chat" size="60" />
             <input type="hidden" name="room_no" value="{{ room_no }}" />
@@ -15,7 +19,7 @@
         </form>
         <hr />
         {% for log in logs %}
-            {{ log.uname }}>>{{ log.chat }}&nbsp;&nbsp;({{ log.time }})<br />
+            {{ log.uname }}&nbsp;&gt;&gt;&nbsp;{{ log.chat }}&nbsp;&nbsp;({{ log.time }})<br />
         {% endfor %}
     </body>
 

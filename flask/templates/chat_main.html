@@ -10,17 +10,18 @@
     {% else %}
     <body onload='fm1.chat.focus();'>
     {% endif %}
-        {{ cur_url }}{{ room_no }}<br />
+        {{ cur_url }}{{ room_no }}
+        <hr />
+        {% for log in logs %}
+            {{ log.uname }}&nbsp;&gt;&gt;&nbsp;{{ log.chat }}&nbsp;&nbsp;({{ log.time }})<br />
+        {% endfor %}
+        <hr />
         <form method="post" action="/" name="fm1">
             名前<input type="text" id="uname" name="uname" size="10" value="{{ uname }}" />
             <input type="text" id="chat" name="chat" size="60" />
             <input type="hidden" name="room_no" value="{{ room_no }}" />
             <input type="submit" />
         </form>
-        <hr />
-        {% for log in logs %}
-            {{ log.uname }}&nbsp;&gt;&gt;&nbsp;{{ log.chat }}&nbsp;&nbsp;({{ log.time }})<br />
-        {% endfor %}
     </body>
 
 </html>

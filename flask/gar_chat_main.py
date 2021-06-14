@@ -2,7 +2,7 @@ import os
 import random, string
 import datetime
 import glob
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 
 
 LOG_DIR = './room_log/'
@@ -40,6 +40,11 @@ def get_logs(no):
 
 def show_page(room_no='', uname='', logs=[]):
     return render_template('chat_main.html', cur_url=request.url, room_no=room_no, uname=uname, logs=logs)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static/img'), 'favicon.ico',)
 
 
 @app.route('/', methods=['GET','POST'])

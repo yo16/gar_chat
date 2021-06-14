@@ -1,0 +1,22 @@
+<!doctype html>
+
+<html>
+    <head>
+        <title>gar_chat - room:{{ room_no }}</title>
+    </head>
+
+    <body>
+        room:{{ room_no }}<br />
+        <form method="post" action="/">
+            名前<input type="text" id="uname" name="uname" size="10" value="{{ uname }}" />
+            <input type="text" id="chat" name="chat" size="60" />
+            <input type="hidden" name="room_no" value="{{ room_no }}" />
+            <input type="submit" />
+        </form>
+        <hr />
+        {% for log in logs %}
+            {{ log.uname }}>>{{ log.chat }}&nbsp;&nbsp;({{ log.time }})<br />
+        {% endfor %}
+    </body>
+
+</html>
